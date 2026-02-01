@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Valentine</title>
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+  font-family:
+    -apple-system,BlinkMacSystemFont,
+    "Segoe UI",Roboto,Arial,
+    "Apple Color Emoji","Segoe UI Emoji",sans-serif;
+  position:relative;
+  overflow:hidden;
+}
+
+/* 💕 Emoji background */
+body::before{
+  content:"❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️  ❤️";
+  position:fixed;
+  inset:0;
+  font-size:34px;
+  line-height:2.8;
+  opacity:0.22;
+  letter-spacing:20px;
+  word-spacing:30px;
+  text-align:center;
+  white-space:pre-wrap;
+  pointer-events:none;
+}
+
+/* 💌 Card */
+.box{
+  background:#fff;
+  width:90%;
+  max-width:360px;
+  max-height:90vh;
+  padding:22px;
+  border-radius:24px;
+  text-align:center;
+  box-shadow:0 25px 50px rgba(0,0,0,0.25);
+  overflow-y:auto;
+  position:relative;
+  z-index:1;
+}
+
+h3{
+  color:#d6336c;
+  margin-top:0;
+}
+
+.welcome{
+  font-size:15px;
+  color:#444;
+  margin:18px 0;
+  line-height:1.5;
+}
+
+button{
+  width:100%;
+  margin:10px 0;
+  padding:14px;
+  border:none;
+  border-radius:16px;
+  background:#ff4d6d;
+  color:#fff;
+  font-size:16px;
+  font-weight:600;
+}
+
+#error{
+  color:#c9184a;
+  font-weight:600;
+}
+
+.result p{
+  text-align:left;
+  font-size:14px;
+}
+
+.love-note{
+  margin-top:18px;
+  padding:16px;
+  background:#fff0f3;
+  border-radius:18px;
+  color:#c9184a;
+  font-size:15px;
+  font-weight:600;
+}
+
+.screenshot{
+  margin-top:14px;
+  font-size:14px;
+  color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+  <h3 id="question">Hey You 💖</h3>
+
+  <div class="welcome" id="welcome">
+    Just pause for a second and smile 😊<br><br>
+    I made this only for you.<br>
+    Take your time — every answer means a lot to me ❤️
+  </div>
+
+  <!-- Start (iOS safe) -->
+  <button type="button" id="startBtn" onclick="startQuiz()">Start 💖</button>
+
+  <div id="options"></div>
+  <div id="error"></div>
+  <div id="result" class="result"></div>
+
+</div>
+
+<!-- 🎶 Background Music -->
+<audio id="bgMusic" loop>
+  <source src="valentine-music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const quiz = [
+ ["Who said I love you first?",["Me","You","Both"]],
+ ["Our favorite time together?",["Talking","Movies","Just us"]],
+ ["What do I love most about you?",["Smile","Care","Everything"]],
+ ["Who gets jealous first?",["Me","You","Both"]],
+ ["Our love language?",["Time","Words","Touch"]],
+ ["Who says sorry first?",["Me","You","Depends"]],
+ ["Who is more romantic?",["Me","You","Both"]],
+ ["What makes us special?",["Trust","Understanding","Friendship"]],
+ ["How do you feel with me?",["Happy","Safe","Complete"]],
+ ["Will you be my Valentine?",["Yes","Always","No"]]
+];
+
+let index = 0;
+let answers = [];
+
+function startQuiz(){
+  document.getElementById("welcome").style.display="none";
+  document.getElementById("startBtn").style.display="none";
+
+  /* 🎶 Play music (iOS allowed only after click) */
+  const music = document.getElementById("bgMusic");
+  music.volume = 0.5;
+  music.play();
+
+  loadQuestion();
+}
+
+function loadQuestion(){
+  document.getElementById("error").innerHTML="";
+  document.getElementById("question").innerHTML = quiz[index][0];
+  const options = document.getElementById("options");
+  options.innerHTML="";
+
+  quiz[index][1].forEach(function(opt){
+    const btn = document.createElement("button");
+    btn.type="button";
+    btn.textContent = opt;
+    btn.onclick = function(){ selectAnswer(opt); };
+    options.appendChild(btn);
+  });
+}
+
+function selectAnswer(ans){
+  if(index===9 && ans==="No"){
+    document.getElementById("error").innerHTML =
+      "😄 Not allowed — you are already my Valentine ❤️";
+    return;
+  }
+
+  answers.push("Q"+(index+1)+": "+quiz[index][0]+" → "+ans);
+  index++;
+
+  if(index < quiz.length){
+    loadQuestion();
+  }else{
+    showResult();
+  }
+}
+
+function showResult(){
+  document.getElementById("question").innerHTML = "From My Heart 💖";
+  document.getElementById("options").innerHTML="";
+
+  let html="<h4>Your Answers 💌</h4>";
+  answers.forEach(a=>html+="<p>"+a+"</p>");
+
+  document.getElementById("result").innerHTML = html + `
+    <div class="love-note">
+      I love you ❤️<br>
+      You are my only Valentine 💍
+    </div>
+    <div class="screenshot">
+      📸 Please send me a screenshot of this page 😊
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
